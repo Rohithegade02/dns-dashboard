@@ -7,16 +7,41 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { deleteRecord, getAllRecord } from '../api/record'
 
-const DnsTableView = ({ domains, setDomains, onEdit }) => {
-  const handleDelete = url => {
-    const deleteItem = domains.filter(item => item.domainUrl !== url)
-    setDomains(deleteItem)
+const DnsTableView = ({ domains, setEditMode, setData, setOpen }) => {
+  const [domainsData, setDomainsData] = useState([])
+
+  const getAllRecordData = async () => {
+    try {
+      const data = await getAllRecord()
+      console.log(data)
+      setDomainsData(data.message)
+    } catch (err) {
+      console.error(err)
+    }
   }
+  const handleDelete = async id => {
+    try {
+      await deleteRecord(id)
+      await getAllRecordData()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const handleEdit = record => {
+    setEditMode('edit')
+    setData(record)
+    setOpen(true)
+  }
+
+  useEffect(() => {
+    getAllRecordData()
+  }, [domains])
   return (
     <div>
-      <h1>Hello</h1>
-      {domains.length > 0 ? (
+      {domainsData?.length > 0 ? (
         <div>
           <div>
             <TableContainer>
@@ -31,7 +56,7 @@ const DnsTableView = ({ domains, setDomains, onEdit }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {domains.map(row => (
+                  {domainsData.map(row => (
                     <TableRow
                       key={row.domainUrl}
                       sx={{
@@ -43,12 +68,12 @@ const DnsTableView = ({ domains, setDomains, onEdit }) => {
                       <TableCell component='th' scope='row'>
                         {row.name}
                       </TableCell>
-                      <TableCell align='right'>{row.name}</TableCell>
+                      <TableCell align='right'>{row.value}</TableCell>
                       <TableCell align='right'>
-                        <Button onClick={() => handleDelete(row.domainUrl)}>
+                        <Button onClick={() => handleDelete(row._id)}>
                           Delete
                         </Button>
-                        <Button onClick={onEdit}>Edit</Button>
+                        <Button onClick={() => handleEdit(row)}>Edit</Button>
                       </TableCell>
                     </TableRow>
                   ))}

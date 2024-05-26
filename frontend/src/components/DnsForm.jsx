@@ -9,6 +9,8 @@ import {
   Typography,
 } from '@mui/material'
 import DnsTableView from './DnsTableView'
+import { addRecord, getAllRecord, updateRecord } from '../api/record'
+import FileUpload from './FileUpload'
 
 const dnsRecordTypes = [
   'A',
@@ -25,40 +27,44 @@ const dnsRecordTypes = [
 
 const DnsForm = () => {
   const [domains, setDomains] = useState([])
-  const [data, setdata] = useState({
+  const [data, setData] = useState({
     domainUrl: '',
     recordType: '',
     name: '',
     value: '',
   })
-  const [editMode, setMode] = useState('add')
+  const [editMode, setEditMode] = useState('add')
   const [open, setOpen] = useState(false)
   const [editIndex, setEditIndex] = useState(null)
+  const [uploadOpen, setUploadOpen] = useState(false)
+
+  const handleUploadOpen = () => setUploadOpen(true)
+  const handleUploadClose = () => setUploadOpen(false)
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => {
     setOpen(false)
-    setdata({ domainUrl: '', recordType: '', name: '', value: '' })
+    setData({ domainUrl: '', recordType: '', name: '', value: '' })
     setEditIndex(null)
   }
-  console.log(domains)
+
   const handleChange = e => {
     const { name, value } = e.target
-    setdata(prevValues => ({
-      ...prevValues,
-      [name]: value,
-    }))
+    setData(prevValues => ({ ...prevValues, [name]: value }))
   }
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    if (editMode === 'add') {
-      setDomains(prevDomains => [...prevDomains, data])
-    } else {
-      const updatedDomains = domains.map((domain, index) =>
-        index === editIndex ? data : domain,
-      )
-      setDomains(updatedDomains)
+    try {
+      if (editMode === 'add') {
+        const newRecord = await addRecord(data)
+        setDomains(prevDomains => [...prevDomains, newRecord])
+      } else {
+        await updateRecord(data._id, data)
+        await getAllRecord()
+      }
+    } catch (error) {
+      console.error('Error:', error)
     }
     handleClose()
   }
@@ -66,6 +72,8 @@ const DnsForm = () => {
   return (
     <div>
       <h1>DNS Records</h1>
+      <Button onClick={handleUploadOpen}>Upload CSV/JSON</Button>
+      <FileUpload open={uploadOpen} handleClose={handleUploadClose} />
       <Button onClick={handleOpen}>Add a Record</Button>
       <Modal
         open={open}
@@ -132,7 +140,13 @@ const DnsForm = () => {
           </form>
         </Box>
       </Modal>
-      <DnsTableView domains={domains} setDomains={setDomains} />
+      <DnsTableView
+        domains={domains}
+        setDomains={setDomains}
+        setEditMode={setEditMode}
+        setData={setData}
+        setOpen={setOpen}
+      />
     </div>
   )
 }
