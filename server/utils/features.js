@@ -6,5 +6,5 @@ export const sendToken = (user,res,message,statusCode) => {
       })
      res
         .cookie("token", token)
-        .status(statusCode).json({ message: message ,token});
+        .status(statusCode).json({success:true, message: message ,token});
 }

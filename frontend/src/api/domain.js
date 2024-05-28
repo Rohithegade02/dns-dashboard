@@ -1,7 +1,7 @@
 export async function getDomain() {
   try {
     const response = await fetch(
-      'http://localhost:4000/api/v1/domain/getdomain',
+      'https://dns-dashboard-q1we.onrender.com/api/v1/domain/getdomain',
     )
     const data = await response.json()
     return data.hostedZones
@@ -13,13 +13,17 @@ export async function getDomain() {
 export async function addDomain(data) {
   console.log(data)
   try {
-    await fetch('http://localhost:4000/api/v1/domain/createdomain', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      'https://dns-dashboard-q1we.onrender.com/api/v1/domain/createdomain',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    })
+    )
+    return response
   } catch (error) {
     console.error(error.message)
   }
@@ -28,7 +32,7 @@ export async function addDomain(data) {
 export async function updateDomainRecord(hostedZoneId, comment) {
   try {
     const response = await fetch(
-      `http://localhost:4000/api/v1/domain/updatedomain/${hostedZoneId}`,
+      `https://dns-dashboard-q1we.onrender.com/api/v1/domain/updatedomain/${hostedZoneId}`,
       {
         method: 'PUT',
         body: JSON.stringify({ comment }), // Sending comment in the request body
@@ -37,7 +41,8 @@ export async function updateDomainRecord(hostedZoneId, comment) {
         },
       },
     )
-    return response.data
+    const result = await response.json()
+    return result
   } catch (error) {
     console.error(error.message)
   }
@@ -46,8 +51,8 @@ export async function updateDomainRecord(hostedZoneId, comment) {
 export async function deleteDomain(hostedZoneId) {
   console.log(hostedZoneId)
   try {
-    await fetch(
-      `http://localhost:4000/api/v1/domain/deletedomain/${hostedZoneId}`,
+    const response = await fetch(
+      `https://dns-dashboard-q1we.onrender.com/api/v1/domain/deletedomain/${hostedZoneId}`,
       {
         method: 'DELETE',
         headers: {
@@ -55,6 +60,8 @@ export async function deleteDomain(hostedZoneId) {
         },
       },
     )
+    const result = await response.json()
+    return result
   } catch (error) {
     console.error(error.message)
   }
@@ -66,16 +73,12 @@ export async function bulkUploadDomains(file) {
 
   try {
     const response = await fetch(
-      'http://localhost:4000/api/v1/domain/createdomain/bulkupload',
+      'https://dns-dashboard-q1we.onrender.com/api/v1/domain/createdomain/bulkupload',
       {
         method: 'POST',
         body: formData,
       },
     )
-
-    if (!response.ok) {
-      throw new Error('Failed to upload domains')
-    }
 
     const data = await response.json()
     return data

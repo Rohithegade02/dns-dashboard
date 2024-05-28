@@ -1,24 +1,22 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-// import DnsForm from './components/DnsForm'
-// import DomainChart from './components/DomainChart'
-
 import SignUp from './components/SignUp'
 import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import DomainDashboard from './components/DomainDashboard'
-
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 function App() {
-  // useEffect(() => {
-  //   isAuth()
-  // }, [])
-  // isAuth()
+  const token = localStorage.getItem('token')
+
   return (
     <div className='max-w-[100vw]'>
+      <ToastContainer />
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<SignUp />} />
+          <Route path='/signup' element={<SignUp />} />
+
           <Route path='/login' element={<Login />} />
-          <Route path='/dns' element={<DomainDashboard />} />
+          <Route path='/' element={<DomainDashboard />} />
           <Route path='/domain' element={<Dashboard />} />
         </Routes>
       </BrowserRouter>

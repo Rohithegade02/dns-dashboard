@@ -7,7 +7,7 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import { useLocation } from 'react-router-dom'
-import { Modal } from '@mui/material'
+import { InputLabel, Modal } from '@mui/material'
 import { listHostedZones } from '../api/dns'
 const recordTypeOption = [
   { value: 'A', name: 'A (Address)' },
@@ -26,13 +26,11 @@ const CreateDNSRecord = ({ onSubmit, open, onClose }) => {
   console.log(domainName)
   const [recordType, setRecordType] = useState('')
   const [recordValue, setRecordValue] = useState('')
-  const location = useLocation()
-  const { title } = location.state || {}
   const params = new URLSearchParams(window.location.search)
   const code = params.get('id')
   console.log(code)
 
-  const handleRecordTypeChange = event => {
+  const handleChangeRecordType = event => {
     const selectedType = event.target.value
     setRecordType(selectedType)
     switch (selectedType) {
@@ -98,44 +96,59 @@ const CreateDNSRecord = ({ onSubmit, open, onClose }) => {
     <Modal
       open={open}
       onClose={onClose}
-      sx={{ background: 'white', width: '50vw' }}
+      sx={{ background: '#000', height: '100vh', width: '50vw' }}
     >
-      <div>
-        <Typography variant='h6' gutterBottom>
-          Create DNS Record
-        </Typography>
-        <Typography>Domain Name</Typography>
-        <TextField
-          fullWidth
-          placeholder='domain Name'
-          value={domainName}
-          disabled
-        />
-        <Typography>Record Type</Typography>
-        <Select
-          value={recordType}
-          onChange={handleRecordTypeChange}
-          fullWidth
-          id='record-type'
-        >
-          {recordTypeOption.map(item => (
-            <MenuItem key={item.value} value={item.value}>
-              {item.name}
-            </MenuItem>
-          ))}
-        </Select>
-        <Typography variant='body1' gutterBottom>
-          Record Value
-        </Typography>
-        <TextField
-          fullWidth
-          id='record-value'
-          value={recordValue}
-          onChange={e => setRecordValue(e.target.value)}
-        />
-        <Button variant='contained' onClick={handleSubmit}>
-          Create DNS Record
-        </Button>
+      <div className='p-5 flex flex-col  justify-center h-[100vh]  gap-10'>
+        <div className='mx-auto'>
+          <Typography fontSize={'20px'} fontWeight={600} color={'#fff'}>
+            Create Domain Record
+          </Typography>
+        </div>
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>Domain Name</InputLabel>
+          <TextField
+            fullWidth
+            value={domainName}
+            placeholder='Domain Name'
+            sx={{ color: '#fff', background: '#fff', borderRadius: '10px' }}
+            disabled={true}
+          />
+        </div>
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>Record Type</InputLabel>
+          <Select
+            value={recordType}
+            onChange={handleChangeRecordType}
+            fullWidth
+            placeholder='Record Type'
+            sx={{ background: '#fff', borderRadius: '10px' }}
+          >
+            {recordTypeOption.map(item => (
+              <MenuItem key={item.value} value={item.value}>
+                {item.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>Description</InputLabel>
+          <TextField
+            fullWidth
+            value={recordValue}
+            placeholder='Description'
+            sx={{ color: '#fff', background: '#fff', borderRadius: '10px' }}
+            onChange={e => setRecordValue(e.target.value)}
+          />
+        </div>
+        <div>
+          <Button
+            onClick={handleSubmit}
+            fullWidth
+            sx={{ background: 'blue', color: '#fff', textTransform: 'none' }}
+          >
+            Create
+          </Button>
+        </div>
       </div>
     </Modal>
   )

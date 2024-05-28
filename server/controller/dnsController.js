@@ -125,7 +125,7 @@ export const deleteDNSRecord = async (req, res) => {
       await route53.changeResourceRecordSets(params).promise();
 
       
-      res.json({success:true,  message: "Deleted successfully" });
+      res.status(201).json({success:true,  message: "Deleted successfully" });
     } else {
       // If trying to delete a SOA record, send a message indicating it's not allowed
       res.status(400).json({success:false, message: "Cannot delete the SOA record. Hosted zone must contain exactly one SOA record." });

@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-import { Modal } from '@mui/material'
+import { InputLabel, Modal } from '@mui/material'
 
 const UpdateDomain = ({
   initialDomainName,
@@ -16,42 +16,54 @@ const UpdateDomain = ({
   const [newDescription, setNewDescription] = useState(initialComment)
 
   const handleSubmit = () => {
-    const newDomain = {
+    const data = {
       domainName,
       description: newDescription,
     }
-    onSubmit(newDomain)
+    onSubmit(data)
   }
-
+  console.log(initialComment)
   return (
     <Modal
       open={open}
       onClose={onClose}
-      sx={{ background: '#d2d2d2', height: '100vh', width: '50vw' }}
+      sx={{ background: '#000', height: '100vh', width: '50vw' }}
     >
-      <div>
-        <Typography variant='h6' gutterBottom>
-          Create HostedZone
-        </Typography>
-        <Typography>Domain Name</Typography>
-        <TextField
-          fullWidth
-          id='domain-name'
-          className='mb-2'
-          value={domainName}
-          disabled={true}
-        />
-        <Typography>Description</Typography>
-        <TextField
-          fullWidth
-          id='description'
-          value={newDescription}
-          onChange={e => setNewDescription(e.target.value)}
-        />
+      <div className='p-5 flex flex-col  justify-center h-[100vh]  gap-10'>
+        <div className='mx-auto'>
+          <Typography fontSize={'20px'} fontWeight={600} color={'#fff'}>
+            Update DNS Record
+          </Typography>
+        </div>
 
-        <Button variant='contained' onClick={handleSubmit}>
-          Update HostedZone
-        </Button>
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>Domain Name</InputLabel>
+          <TextField
+            fullWidth
+            value={domainName}
+            placeholder='Domain Name'
+            sx={{ color: '#fff', background: '#fff', borderRadius: '10px' }}
+            disabled={true}
+          />
+        </div>
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>Description</InputLabel>
+          <TextField
+            fullWidth
+            value={newDescription}
+            sx={{ color: '#fff', background: '#fff', borderRadius: '10px' }}
+            onChange={e => setNewDescription(e.target.value)}
+          />
+        </div>
+        <div>
+          <Button
+            onClick={handleSubmit}
+            fullWidth
+            sx={{ background: 'blue', color: '#fff', textTransform: 'none' }}
+          >
+            Update
+          </Button>
+        </div>
       </div>
     </Modal>
   )

@@ -1,14 +1,10 @@
 import { useState } from 'react'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
-import FormControl from '@mui/material/FormControl'
-import { useLocation } from 'react-router-dom'
-import { Modal } from '@mui/material'
-import { listHostedZones } from '../api/dns'
+import { InputLabel, Modal } from '@mui/material'
 
 const recordTypeOption = [
   { value: 'A', name: 'A (Address)' },
@@ -30,65 +26,62 @@ const UpdateDNSRecord = ({
   onClose,
 }) => {
   const [domainName, setDomainName] = useState(initialDomainName)
-  const [recordType, setRecordType] = useState(initialRecordType)
-  const [recordValue, setRecordValue] = useState(initialRecordValue)
-  const [ttl, setTTL] = useState('3600') // TTL state
-  const location = useLocation()
-  const { title } = location.state || {}
+  const [newRecordType, setNewRecordType] = useState(initialRecordType)
+  const [newRecordValue, setNewRecordValue] = useState(initialRecordValue)
+  const [ttl, setTTL] = useState('3600')
   const params = new URLSearchParams(window.location.search)
   const code = params.get('code')
 
   // Function to handle changes in record type
-  // Function to handle changes in record type
-  const handleRecordTypeChange = event => {
+  const handleChangeRecordType = event => {
     const selectedType = event.target.value
-    setRecordType(selectedType)
+    setNewRecordType(selectedType)
     // Set record value and TTL based on record type
     switch (selectedType) {
       case 'A':
-        setRecordValue('192.0.2.1')
+        setNewRecordValue('192.0.2.1')
         setTTL('3600')
         break
       case 'AAAA':
-        setRecordValue('2001:0db8:85a3:0000:0000:8a2e:0370:7334')
+        setNewRecordValue('2001:0db8:85a3:0000:0000:8a2e:0370:7334')
         setTTL('3600')
         break
       case 'CNAME':
-        setRecordValue('example.com')
+        setNewRecordValue('example.com')
         setTTL('3600')
         break
       case 'MX':
-        setRecordValue('10 mail.example.com')
+        setNewRecordValue('10 mail.example.com')
         setTTL('3600')
         break
       case 'NS':
-        setRecordValue('ns1.example.com')
+        setNewRecordValue('ns1.example.com')
         setTTL('3600')
         break
       case 'PTR':
-        setRecordValue('example.com')
+        setNewRecordValue('example.com')
         setTTL('3600')
         break
       case 'SOA':
-        setRecordValue(
+        setNewRecordValue(
           'ns1.example.com hostmaster.example.com 2022032801 7200 3600 1209600 3600',
         )
         setTTL('3600')
         break
       case 'SRV':
-        setRecordValue('0 5 5269 xmpp-server.example.com')
+        setNewRecordValue('0 5 5269 xmpp-server.example.com')
         setTTL('3600')
         break
       case 'TXT':
-        setRecordValue('sample text')
+        setNewRecordValue('sample text')
         setTTL('3600')
         break
       case 'DNSSEC':
-        setRecordValue('true')
+        setNewRecordValue('true')
         setTTL('3600')
         break
       default:
-        setRecordValue('')
+        setNewRecordValue('')
         setTTL('3600')
     }
   }
@@ -97,8 +90,8 @@ const UpdateDNSRecord = ({
     const updatedDNSRecord = {
       recordData: {
         Name: domainName,
-        Type: recordType,
-        Value: recordValue,
+        Type: newRecordType,
+        Value: newRecordValue,
         ttl,
       },
     }
@@ -110,31 +103,33 @@ const UpdateDNSRecord = ({
     <Modal
       open={open}
       onClose={onClose}
-      sx={{ background: 'white', width: '50vw' }}
+      sx={{ background: '#000', height: '100vh', width: '50vw' }}
     >
-      <Box sx={{ p: 4 }}>
-        <Typography variant='h6' gutterBottom>
-          Update DNS Record
-        </Typography>
-        <Typography variant='body1' gutterBottom>
-          Domain Name
-        </Typography>
-        <TextField
-          fullWidth
-          id='domain-name'
-          value={domainName}
-          // onChange={(e) => setDomainName(e.target.value)}
-          disabled
-        />
-        <Typography variant='body1' gutterBottom>
-          Record Type
-        </Typography>
-        <FormControl fullWidth>
+      <div className='p-5 flex flex-col  justify-center h-[100vh]  gap-10'>
+        <div className='mx-auto'>
+          <Typography fontSize={'20px'} fontWeight={600} color={'#fff'}>
+            Update DNS Record
+          </Typography>
+        </div>
+
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>Domain Name</InputLabel>
+          <TextField
+            fullWidth
+            value={domainName}
+            placeholder='Domain Name'
+            sx={{ color: '#fff', background: '#fff', borderRadius: '10px' }}
+            disabled={true}
+          />
+        </div>
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>Record Type</InputLabel>
           <Select
-            labelId='record-type-label'
-            id='record-type'
-            value={recordType}
-            onChange={handleRecordTypeChange} // Call handleRecordTypeChange on change
+            value={newRecordType}
+            onChange={handleChangeRecordType}
+            fullWidth
+            placeholder='Record Type'
+            sx={{ background: '#fff', borderRadius: '10px' }}
           >
             {recordTypeOption.map(item => (
               <MenuItem key={item.value} value={item.value}>
@@ -142,24 +137,36 @@ const UpdateDNSRecord = ({
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
-        <Typography variant='body1' gutterBottom>
-          Record Value
-        </Typography>
-        <TextField
-          fullWidth
-          id='record-value'
-          value={recordValue}
-          onChange={e => setRecordValue(e.target.value)}
-        />
-        <Typography variant='body1' gutterBottom>
-          TTL
-        </Typography>
-        <TextField fullWidth id='record-ttl' value={ttl} disabled />
-        <Button variant='contained' onClick={handleSubmit}>
-          Update DNS Record
-        </Button>
-      </Box>
+        </div>
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>Description</InputLabel>
+          <TextField
+            fullWidth
+            value={newRecordValue}
+            placeholder='Description'
+            sx={{ color: '#fff', background: '#fff', borderRadius: '10px' }}
+            onChange={e => setNewRecordValue(e.target.value)}
+          />
+        </div>
+        <div>
+          <InputLabel sx={{ color: '#fff' }}>TTL</InputLabel>
+          <TextField
+            fullWidth
+            value={ttl}
+            sx={{ color: '#fff', background: '#fff', borderRadius: '10px' }}
+            disabled={true}
+          />
+        </div>
+        <div>
+          <Button
+            onClick={handleSubmit}
+            fullWidth
+            sx={{ background: 'blue', color: '#fff', textTransform: 'none' }}
+          >
+            Update
+          </Button>
+        </div>
+      </div>
     </Modal>
   )
 }

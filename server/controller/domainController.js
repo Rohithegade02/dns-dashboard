@@ -30,13 +30,13 @@ export const createDomain = async (req,res)=>{
             Comment: desc
           }
         };
-    const result = await route53.createHostedZone(params).promise();
+   await route53.createHostedZone(params).promise();
 
     return res
       .status(201)
       .json({
         success:true,
-        result
+        message:"Added Successfully"
       })
   } catch (error) {
 
@@ -64,7 +64,9 @@ export const updateDomain = async (req, res) => {
     };
 
     await route53.updateHostedZoneComment(params).promise();
-    return res.status(200).json({ success: true, message:"Updated Successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Updated Successfully" });
   } catch (error) {
     console.error('Error updating hosted zone:', error);
     return res.status(500).json({success:true, message: error });
@@ -80,7 +82,9 @@ export const deleteDomain = async (req,res) => {
     };
     await route53.deleteHostedZone(params).promise();
     
-    return res.status(200).json({ success: true, message:"Deleted Successfully" })
+    return res
+      .status(200)
+      .json({ success: true, message: "Deleted Successfully" })
   } catch (error) {
     return  res.status(500).json({ success: flase, message:error });
   }

@@ -1,39 +1,42 @@
+//register a user
 export async function registerUser(data) {
-  console.log(data)
   try {
-    const response = await fetch('http://localhost:4000/api/v1/user/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      'https://dns-dashboard-q1we.onrender.com/api/v1/user/register',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    })
+    )
     const result = await response.json()
-    console.log(result)
     localStorage.setItem('token', result.token)
+    return result
   } catch (error) {
     console.error('Error:', error)
   }
 }
 
-// Frontend: loginUser function
+// login user
 export async function loginUser(data) {
   console.log(data)
   try {
-    const response = await fetch('http://localhost:4000/api/v1/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      'https://dns-dashboard-q1we.onrender.com/api/v1/user/login',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    })
+    )
 
     const result = await response.json()
     console.log(result)
     localStorage.setItem('token', result.token)
-    if (!response.ok) {
-      throw new Error(result.message || 'Login failed')
-    }
 
     return result
   } catch (error) {
@@ -43,7 +46,9 @@ export async function loginUser(data) {
 
 // export async function isAuth() {
 //   try {
-//     const response = await fetch('http://localhost:4000/api/v1/user/getProfile')
+//     const response = await fetch(
+//       'https://dns-dashboard-q1we.onrender.com/api/v1/user/getProfile',
+//     )
 //     console.log(response)
 //     return response.json()
 //   } catch (err) {

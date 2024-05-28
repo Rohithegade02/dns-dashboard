@@ -2,6 +2,7 @@ import { Button, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../api/user'
+import { toast } from 'react-toastify'
 const SignUp = () => {
   const navigate = useNavigate()
   const [user, setUser] = useState({
@@ -98,14 +99,19 @@ const SignUp = () => {
         message: 'Passwords do not match',
       })
     } else {
-      await registerUser(user)
-      setUser({ name: '', email: '', password: '', confirmPassword: '' })
-      navigate('/login') //navigate to login page
+      const res = await registerUser(user)
+      if (res.sucess) {
+        toast.success(res.message)
+        setUser({ name: '', email: '', password: '', confirmPassword: '' })
+        navigate('/') //navigate to login page
+      } else {
+        toast.error(res.message)
+      }
     }
   }
 
   return (
-    <div className='border border-slate-900'>
+    <div className=''>
       <form
         onSubmit={handleSubmit}
         className='flex justify-center h-[100vh] flex-col items-center gap-5 border-5 border-[#000] p-5'

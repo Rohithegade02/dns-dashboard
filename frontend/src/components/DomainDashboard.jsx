@@ -1,13 +1,16 @@
 import {
   Button,
+  InputAdornment,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   styled,
 } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
 import { useEffect, useState } from 'react'
 import {
   addDomain,
@@ -19,44 +22,59 @@ import {
 import CreateDomain from './CreateDomain'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import UpdateDomain from './UpdateDomain'
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-})
+import { toast } from 'react-toastify'
+// const VisuallyHiddenInput = styled('input')({
+//   clip: 'rect(0 0 0 0)',
+//   clipPath: 'inset(50%)',
+//   height: 1,
+//   overflow: 'hidden',
+//   position: 'absolute',
+//   bottom: 0,
+//   left: 0,
+//   whiteSpace: 'nowrap',
+//   width: 1,
+// })
 const DomainDashboard = () => {
   const [domainsData, setDomainsData] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [recordToUpdate, setRecordToUpdate] = useState(null)
   const [file, setFile] = useState(null)
-  console.log(recordToUpdate)
+  const [search, setSearch] = useState('')
+  console.log(domainsData)
   const getAllRecordData = async () => {
     try {
       const data = await getDomain()
-      console.log(data)
       setDomainsData(data)
     } catch (err) {
       console.error(err)
     }
   }
 
-  const handleCreateOrUpdateDomain = async data => {
+  const handleEditOrAddDomain = async data => {
     try {
       if (recordToUpdate) {
         const id = recordToUpdate.Id?.split('/')?.pop()
-        await updateDomainRecord(id, data.description)
+        const res = await updateDomainRecord(id, data.description)
+        if (res.success) {
+          toast.success(res.message)
+          setOpenModal(false)
+          setRecordToUpdate(null)
+          getAllRecordData()
+        } else {
+          toast.error(res.message)
+          setOpenModal(false)
+        }
       } else {
-        await addDomain(data)
-        getDomain()
-        setOpenModal(false) // Close the popup after successful creation or update
-        setRecordToUpdate(null)
-        ///  await addDomain(data)
+        const res = await addDomain(data)
+        if (res.ok) {
+          toast.success('Created  Successfully')
+          setOpenModal(false)
+          setRecordToUpdate(null)
+          getAllRecordData()
+        } else {
+          toast.error('Failed to Create ')
+          setOpenModal(false)
+        }
       }
     } catch (error) {
       console.error(error)
@@ -66,8 +84,14 @@ const DomainDashboard = () => {
     console.log(domainId)
     try {
       const id = domainId?.split('/')?.pop()
-      await deleteDomain(id)
-      getAllRecordData()
+      const res = await deleteDomain(id)
+      if (res.success) {
+        toast.success(res.message)
+        getAllRecordData()
+      } else {
+        toast.error(res.message)
+        setOpenModal(false)
+      }
     } catch (error) {
       console.error(error)
     }
@@ -77,20 +101,42 @@ const DomainDashboard = () => {
     getAllRecordData()
   }, [])
   const handleUpdateDomain = record => {
-    console.log(record)
     setRecordToUpdate(record)
     setOpenModal(true)
   }
   const handleBulkUpload = async () => {
     if (file) {
-      const result = await bulkUploadDomains(file)
-      console.log('Bulk upload result:', result)
+      const res = await bulkUploadDomains(file)
+      if (res.success) {
+        toast.success(res.message)
+        getAllRecordData()
+      } else {
+        toast.error(res.message)
+        setOpenModal(false)
+      }
     } else {
       console.error('No file selected for upload')
     }
   }
+  const filteredData = domainsData.filter(data =>
+    data.Name.toLowerCase().includes(search.toLowerCase()),
+  )
   return (
     <div>
+      <div>
+        <TextField
+          value={search}
+          placeholder='Search by Url'
+          onChange={e => setSearch(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </div>
       <div>
         <input type='file' onChange={e => setFile(e.target.files[0])} />
         <button onClick={handleBulkUpload}>Upload Domains</button>
@@ -98,7 +144,7 @@ const DomainDashboard = () => {
       <Button onClick={() => setOpenModal(true)}>Create Domain</Button>
       {openModal && (
         <CreateDomain
-          onSubmit={handleCreateOrUpdateDomain}
+          onSubmit={handleEditOrAddDomain}
           open={openModal}
           onClose={() => setOpenModal(false)}
         />
@@ -107,7 +153,7 @@ const DomainDashboard = () => {
         <UpdateDomain
           initialDomainName={recordToUpdate.Name}
           initialComment={recordToUpdate?.Config?.Comment}
-          onSubmit={handleCreateOrUpdateDomain}
+          onSubmit={handleEditOrAddDomain}
           onClose={() => {
             setOpenModal(false)
             setRecordToUpdate(null)
@@ -127,8 +173,8 @@ const DomainDashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {domainsData?.length > 0 ? (
-                  domainsData.map(row => (
+                {filteredData?.length > 0 ? (
+                  filteredData.map(row => (
                     <TableRow
                       key={row.Id}
                       sx={{
@@ -157,7 +203,7 @@ const DomainDashboard = () => {
                         </div>
                       ) : (
                         <h2 className='mt-4 gap-2'>
-                          You can delete Zone only after deleting all records
+                          You can only delete after deleting all records
                         </h2>
                       )}
                     </TableRow>

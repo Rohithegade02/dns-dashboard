@@ -2,6 +2,7 @@ import { Button, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../api/user'
+import { toast } from 'react-toastify'
 const Login = () => {
   const navigate = useNavigate()
   const [user, setUser] = useState({
@@ -48,11 +49,15 @@ const Login = () => {
       message: '',
     })
     console.log(user)
-    await loginUser(user)
+    const res = loginUser(user)
+    if (res.success) {
+      toast.success(res.message)
+      navigate('/')
+    }
   }
 
   return (
-    <div className='border border-slate-900'>
+    <div className=''>
       <form
         onSubmit={handleSubmit}
         className='flex justify-center h-[100vh] flex-col items-center gap-5  p-5'

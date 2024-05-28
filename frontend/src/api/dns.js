@@ -1,7 +1,7 @@
 export async function listHostedZones(hostedZoneId) {
   try {
     const response = await fetch(
-      `http://localhost:4000/api/v1/dns/hostedZones/${hostedZoneId}`,
+      `https://dns-dashboard-q1we.onrender.com/api/v1/dns/hostedZones/${hostedZoneId}`,
     )
     const data = await response.json()
     return data
@@ -13,13 +13,16 @@ export async function listHostedZones(hostedZoneId) {
 export async function createDNSRecord(recordData, code) {
   console.log(recordData, code)
   try {
-    const response = await fetch(`http://localhost:4000/api/v1/dns/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `https://dns-dashboard-q1we.onrender.com/api/v1/dns/add`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...recordData, code }),
       },
-      body: JSON.stringify({ ...recordData, code }),
-    })
+    )
 
     return response.data
   } catch (error) {
@@ -31,7 +34,7 @@ export async function updateDNSRecord(id, recordData) {
   console.log(id, recordData)
   try {
     const response = await fetch(
-      `http://localhost:4000/api/v1/dns/update/${recordData}`,
+      `https://dns-dashboard-q1we.onrender.com/api/v1/dns/update/${recordData}`,
       {
         method: 'PUT',
         headers: {
@@ -50,7 +53,7 @@ export async function updateDNSRecord(id, recordData) {
 export async function deleteDNSRecord(record, id) {
   try {
     const response = await fetch(
-      `http://localhost:4000/api/v1/dns/delete/${id}`,
+      `https://dns-dashboard-q1we.onrender.com/api/v1/dns/delete/${id}`,
       {
         method: 'DELETE',
         headers: {

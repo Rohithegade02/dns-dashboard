@@ -7,43 +7,27 @@ import {
 } from '../api/dns'
 import {
   Button,
-  Card,
+  InputAdornment,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from '@mui/material'
 import CreateDNSRecord from './createDNSRecord'
 import UpdateDNSRecord from './UpdateDNSRecord'
-// import { UserPlusIcon } from "@heroicons/react/24/solid";
-// import CreateDNSRecord from "./createDNSpopup";
-// import UpdateDNSRecord from "./updateDNSpopup";
-// import { ToastContainer } from "react-toastify";
-// import { useNavigate ,useLocation} from "react-router-dom";
-
+import SearchIcon from '@mui/icons-material/Search'
 function Dashboard() {
   const [dnsRecords, setDNSRecords] = useState([])
+  console.log(dnsRecords)
   const [openModal, setOpenModal] = useState(false)
-  //   const [isCreateOrUpdateDNSRecordOpen, setIsCreateOrUpdateDNSRecordOpen] =
-  //     useState(false);
   const [recordToUpdate, setRecordToUpdate] = useState(null)
-  //   const [searchQuery, setSearchQuery] = useState("");
   const params = new URLSearchParams(window.location.search)
   const code = params.get('id')
-  //   console.log(code)
-  //   const navigate = useNavigate();
-  //   const location = useLocation();
-  //   const { title } = location.state || {};
 
-  //   const handleSearch = (event) => {
-  //     setSearchQuery(event.target.value);
-  //   };
-
-  // const filteredDNSRecords = dnsRecords.filter((record) =>
-  //   record.Name.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
+  const [search, setSearch] = useState('')
   useEffect(() => {
     fetchDNSRecords()
   }, [])
@@ -80,9 +64,27 @@ function Dashboard() {
     }
   }
 
+  const filteredData = dnsRecords.filter(data =>
+    data.Name.toLowerCase().includes(search.toLowerCase()),
+  )
+
   return (
     <>
       <div className='h-full w-full'>
+        <div>
+          <TextField
+            placeholder='Search'
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
         <div>
           <Button onClick={() => setOpenModal(true)}>Create New Record</Button>
         </div>
@@ -119,8 +121,8 @@ function Dashboard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {dnsRecords?.length > 0 ? (
-                dnsRecords.map(row => (
+              {filteredData?.length > 0 ? (
+                filteredData.map(row => (
                   <TableRow
                     key={row.Name}
                     sx={{
