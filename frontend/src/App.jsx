@@ -1,33 +1,25 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 // import DnsForm from './components/DnsForm'
 // import DomainChart from './components/DomainChart'
-// import PrivateRoute from './components/PrivateROute'
+
 import SignUp from './components/SignUp'
 import Login from './components/Login'
-import { useEffect } from 'react'
-import { isAuth } from './api/user'
+import Dashboard from './components/Dashboard'
+import DomainDashboard from './components/DomainDashboard'
 
 function App() {
-  useEffect(() => {
-    isAuth()
-  }, [])
-  isAuth()
+  // useEffect(() => {
+  //   isAuth()
+  // }, [])
+  // isAuth()
   return (
     <div className='max-w-[100vw]'>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<SignUp />} />
           <Route path='/login' element={<Login />} />
-          {/* Private route only can be accessed when authenticated */}
-          {/* <Route
-            path='/todo'
-            element={
-              <PrivateRoute isAuthenticated={isAuthenticated}>
-                <DnsForm />
-              </PrivateRoute>
-            }
-          />
-          {/* Redirect to login if not authenticated */}
+          <Route path='/dns' element={<DomainDashboard />} />
+          <Route path='/domain' element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </div>

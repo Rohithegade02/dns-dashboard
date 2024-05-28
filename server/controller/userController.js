@@ -2,12 +2,8 @@ import express from 'express';
 import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
 import { sendToken } from '../utils/features.js';
-import { isAuthenticated } from '../middleware/auth.js';
 
-
-const router = express.Router()
-
-router.post('/register', async (req, res) => {
+export const registerUser=async (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
    
     try {
@@ -33,8 +29,8 @@ router.post('/register', async (req, res) => {
             message: err
         });
     }
-})
-router.post('/login', async (req, res,next) => {
+}
+export const loginUser=async (req, res,next) => {
     const { email, password } = req.body;
 
     try {
@@ -59,13 +55,8 @@ router.post('/login', async (req, res,next) => {
             message: err
         });
     }
-})
-router.get('/getProfile', isAuthenticated,(req, res) => {
-    return res.status(200).json({
-        success:true
-    })
-})
-router.get('/logout', async (req, res) => {
+}
+export const logout=async (req, res) => {
     res
         .status(200)
         .cookie("token", "",{expires:new Date(Date.now())})
@@ -73,5 +64,9 @@ router.get('/logout', async (req, res) => {
             success: true,
           
         })
-})
-export default router;
+}
+export const getProfile=(req, res) => {
+    return res.status(200).json({
+        success:true
+    })
+}

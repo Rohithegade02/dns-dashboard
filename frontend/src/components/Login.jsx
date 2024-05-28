@@ -1,7 +1,7 @@
 import { Button, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { isAuth, loginUser } from '../api/user'
+import { loginUser } from '../api/user'
 const Login = () => {
   const navigate = useNavigate()
   const [user, setUser] = useState({

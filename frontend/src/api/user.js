@@ -41,12 +41,12 @@ export async function loginUser(data) {
   }
 }
 
-export async function isAuth() {
-  try {
-    const response = await fetch('http://localhost:4000/api/v1/user/getProfile')
-    console.log(response)
-    return response.json()
-  } catch (err) {
-    console.log(err)
-  }
-}
+// export async function isAuth() {
+//   try {
+//     const response = await fetch('http://localhost:4000/api/v1/user/getProfile')
+//     console.log(response)
+//     return response.json()
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }

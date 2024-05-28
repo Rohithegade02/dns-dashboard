@@ -1,16 +1,15 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import RecordRouter from './routes/record.js'
 import cors from 'cors';
-import UserRouter from './routes/user.js'
+import UserRoutes from './routes/userRoute.js'
 import cookieParser from 'cookie-parser';
-
-const app = express();
-
+import configAWS from './config/aws.js';
+import domainRoute from "./routes/domainRoute.js"
+import dnsRoute from './routes/dnsRoute.js'
+const app = express(); //create a app
 
 dotenv.config();
-
 
 // Connect to MongoDB
 mongoose
@@ -19,14 +18,15 @@ mongoose
 app.use(express.json());
 app.use(cors())
 app.use(cookieParser())
-// record route
-app.use('/api/v1/records', RecordRouter);
-app.use('/api/v1/user', UserRouter)
+configAWS()  //config aws file
 
-
+app.use('/api/v1/user', UserRoutes) //user route
+app.use('/api/v1/domain',domainRoute) //domain route
+app.use('/api/v1/dns',dnsRoute) // dns route
 app.get('/',  (req,res) => {
-  console.log(req.cookies)
+  res.send('Hello Server')
 })
+
 // Start server
 app.listen(process.env.PORT, () => {
   console.log(`Server running on ${process.env.PORT} `);
