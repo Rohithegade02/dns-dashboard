@@ -35,9 +35,6 @@ export async function loginUser(data) {
     )
 
     const result = await response.json()
-    console.log(result)
-    localStorage.setItem('token', result.token)
-
     return result
   } catch (error) {
     console.error('Error:', error)

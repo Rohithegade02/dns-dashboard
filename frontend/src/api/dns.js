@@ -24,7 +24,8 @@ export async function createDNSRecord(recordData, code) {
       },
     )
 
-    return response.data
+    const result = response.json()
+    return result
   } catch (error) {
     console.error(error.message)
   }
@@ -44,7 +45,8 @@ export async function updateDNSRecord(id, recordData) {
         body: JSON.stringify(id),
       },
     )
-    return response.data
+    const result = response.json()
+    return result
   } catch (error) {
     console.error(error.message)
   }
@@ -63,7 +65,8 @@ export async function deleteDNSRecord(record, id) {
         body: JSON.stringify(record),
       },
     )
-    return response.data
+    const result = response.json()
+    return result
   } catch (error) {
     console.error(error.message)
   }

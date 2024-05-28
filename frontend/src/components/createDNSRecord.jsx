@@ -72,9 +72,6 @@ const CreateDNSRecord = ({ onSubmit, open, onClose }) => {
   }
   async function fetchDNSRecords() {
     await listHostedZones(code).then(res => setDomainName(res[0].Name))
-
-    // console.log(data)
-    // setDNSRecords(response)
   }
   useEffect(() => {
     fetchDNSRecords()
@@ -96,7 +93,7 @@ const CreateDNSRecord = ({ onSubmit, open, onClose }) => {
     <Modal
       open={open}
       onClose={onClose}
-      sx={{ background: '#000', height: '100vh', width: '50vw' }}
+      sx={{ background: '#6366F1', height: '100vh', width: '30vw' }}
     >
       <div className='p-5 flex flex-col  justify-center h-[100vh]  gap-10'>
         <div className='mx-auto'>
@@ -144,7 +141,15 @@ const CreateDNSRecord = ({ onSubmit, open, onClose }) => {
           <Button
             onClick={handleSubmit}
             fullWidth
-            sx={{ background: 'blue', color: '#fff', textTransform: 'none' }}
+            sx={{
+              padding: '10px',
+              background: '#fff',
+              color: '#6366F1',
+              textTransform: 'none',
+              '&:hover': {
+                background: '#fff',
+              },
+            }}
           >
             Create
           </Button>

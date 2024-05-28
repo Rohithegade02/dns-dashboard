@@ -1,9 +1,12 @@
 import { Button, TextField } from '@mui/material'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../api/user'
 import { toast } from 'react-toastify'
+import { AuthContext } from '../context/AuthProvider'
+
 const Login = () => {
+  const { login } = useContext(AuthContext)
   const navigate = useNavigate()
   const [user, setUser] = useState({
     email: '',
@@ -48,11 +51,15 @@ const Login = () => {
       status: false,
       message: '',
     })
-    console.log(user)
-    const res = loginUser(user)
+
+    const res = await loginUser(user)
+
     if (res.success) {
-      toast.success(res.message)
+      login(res.token)
       navigate('/')
+      toast.success(res.message)
+    } else {
+      toast.error(res.message)
     }
   }
 
@@ -119,7 +126,7 @@ const Login = () => {
           <p>
             Don&apos;t have an account?{' '}
             <span
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/signup')}
               className='text-[#2196f3] cursor-pointer underline-offset-1'
             >
               Create

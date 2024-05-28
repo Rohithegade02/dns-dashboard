@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { InputLabel, Modal } from '@mui/material'
@@ -64,7 +63,7 @@ const CreateDomain = ({ onSubmit, open, onClose }) => {
     <Modal
       open={open}
       onClose={onClose}
-      sx={{ background: '#000', height: '100vh', width: '50vw' }}
+      sx={{ background: '#6366F1', height: '100vh', width: '30vw' }}
     >
       <div className='p-5 flex flex-col  justify-center h-[100vh]  gap-10'>
         <div className='mx-auto'>
@@ -96,7 +95,15 @@ const CreateDomain = ({ onSubmit, open, onClose }) => {
           <Button
             onClick={handleSubmit}
             fullWidth
-            sx={{ background: 'blue', color: '#fff', textTransform: 'none' }}
+            sx={{
+              padding: '10px',
+              background: '#fff',
+              color: '#6366F1',
+              textTransform: 'none',
+              '&:hover': {
+                background: '#fff',
+              },
+            }}
           >
             Create
           </Button>

@@ -1,9 +1,11 @@
 import { Button, TextField } from '@mui/material'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../api/user'
 import { toast } from 'react-toastify'
+import { AuthContext } from '../context/AuthProvider'
 const SignUp = () => {
+  const { login } = useContext(AuthContext)
   const navigate = useNavigate()
   const [user, setUser] = useState({
     //initialized user state
@@ -100,10 +102,10 @@ const SignUp = () => {
       })
     } else {
       const res = await registerUser(user)
-      if (res.sucess) {
+      if (res.success) {
+        login(res.token)
+        navigate('/')
         toast.success(res.message)
-        setUser({ name: '', email: '', password: '', confirmPassword: '' })
-        navigate('/') //navigate to login page
       } else {
         toast.error(res.message)
       }

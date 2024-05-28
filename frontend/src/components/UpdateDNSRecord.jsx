@@ -103,7 +103,7 @@ const UpdateDNSRecord = ({
     <Modal
       open={open}
       onClose={onClose}
-      sx={{ background: '#000', height: '100vh', width: '50vw' }}
+      sx={{ background: '#6366F1', height: '100vh', width: '30vw' }}
     >
       <div className='p-5 flex flex-col  justify-center h-[100vh]  gap-10'>
         <div className='mx-auto'>
@@ -161,7 +161,15 @@ const UpdateDNSRecord = ({
           <Button
             onClick={handleSubmit}
             fullWidth
-            sx={{ background: 'blue', color: '#fff', textTransform: 'none' }}
+            sx={{
+              padding: '10px',
+              background: '#fff',
+              color: '#6366F1',
+              textTransform: 'none',
+              '&:hover': {
+                background: '#fff',
+              },
+            }}
           >
             Update
           </Button>
