@@ -112,10 +112,10 @@ export const bulkUploadDomain = async (req, res) => {
     for (const item of data) {
       const { domainName, desc } = item;
 
-      // if (!domainName) {
-      //   console.error("Missing domainName in item:", item);
-      //   continue; // Skip this item and move to the next one
-      // } 
+      if (!domainName) {
+        console.error("Missing domainName in item:", item);
+        continue; // Skip this item and move to the next one
+      } 
 
       const params = {
         CallerReference: `${Date.now()}`,

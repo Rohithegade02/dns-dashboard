@@ -116,6 +116,7 @@ const DomainDashboard = () => {
   const handleBulkUpload = async () => {
     if (file) {
       const res = await bulkUploadDomains(file)
+      console.log(res)
       if (res.success) {
         toast.success(res.message)
         getAllRecordData()
@@ -224,7 +225,7 @@ const DomainDashboard = () => {
               onClick={handleButtonClick}
             >
               <AddToPhotosIcon sx={{ marginRight: '5px' }} />
-              Bulk JSON File
+              Bulk JSON or CSV File
             </Button>
             <Button
               variant='contained'

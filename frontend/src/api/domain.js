@@ -79,6 +79,7 @@ export async function bulkUploadDomains(file) {
     )
 
     const data = await response.json()
+    console.log(data)
     return data
   } catch (error) {
     console.error('Error during bulk upload:', error.message)
