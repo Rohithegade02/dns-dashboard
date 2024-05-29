@@ -1,5 +1,6 @@
 import {
   Button,
+  IconButton,
   InputAdornment,
   Table,
   TableBody,
@@ -9,7 +10,6 @@ import {
   TableRow,
   TextField,
   Typography,
-  styled,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { useContext, useEffect, useState } from 'react'
@@ -25,6 +25,7 @@ import {
   updateDomainRecord,
 } from '../api/domain'
 import AddIcon from '@mui/icons-material/Add'
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos'
 import { useNavigate } from 'react-router-dom'
 
 const DomainDashboard = () => {
@@ -32,28 +33,32 @@ const DomainDashboard = () => {
   const { logout } = useContext(AuthContext)
   const [domainsData, setDomainsData] = useState([])
   const [openModal, setOpenModal] = useState(false)
-  const [recordToUpdate, setRecordToUpdate] = useState(null)
+  const [recordIndex, setRecordIndex] = useState(null)
   const [file, setFile] = useState(null)
   const [search, setSearch] = useState('')
-  console.log(domainsData)
+  const [loading, setLoading] = useState(false)
+
   const getAllRecordData = async () => {
+    setLoading(true)
     try {
       const data = await getDomain()
       setDomainsData(data)
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      console.error('Error fetching DNS records:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleEditOrAddDomain = async data => {
     try {
-      if (recordToUpdate) {
-        const id = recordToUpdate.Id?.split('/')?.pop()
+      if (recordIndex) {
+        const id = recordIndex.Id?.split('/')?.pop()
         const res = await updateDomainRecord(id, data.description)
         if (res.success) {
           toast.success(res.message)
           setOpenModal(false)
-          setRecordToUpdate(null)
+          setRecordIndex(null)
           getAllRecordData()
         } else {
           toast.error(res.message)
@@ -64,7 +69,7 @@ const DomainDashboard = () => {
         if (res.ok) {
           toast.success('Created  Successfully')
           setOpenModal(false)
-          setRecordToUpdate(null)
+          setRecordIndex(null)
           getAllRecordData()
         } else {
           toast.error('Failed to Create ')
@@ -75,8 +80,8 @@ const DomainDashboard = () => {
       console.error(error)
     }
   }
+
   const handleDeleteDomain = async domainId => {
-    console.log(domainId)
     try {
       const id = domainId?.split('/')?.pop()
       const res = await deleteDomain(id)
@@ -95,10 +100,12 @@ const DomainDashboard = () => {
   useEffect(() => {
     getAllRecordData()
   }, [])
+
   const handleUpdateDomain = record => {
-    setRecordToUpdate(record)
+    setRecordIndex(record)
     setOpenModal(true)
   }
+
   const handleFileChange = event => {
     setFile(event.target.files[0])
   }
@@ -120,6 +127,7 @@ const DomainDashboard = () => {
       console.error('No file selected for upload')
     }
   }
+
   const filteredData = domainsData.filter(data =>
     data.Name.toLowerCase().includes(search.toLowerCase()),
   )
@@ -154,13 +162,15 @@ const DomainDashboard = () => {
           <div>
             <TextField
               value={search}
-              placeholder='Search by Url'
+              placeholder='Search by Name'
               onChange={e => setSearch(e.target.value)}
               sx={{ width: '30vw', background: '#fff' }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
-                    <SearchIcon />
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}
@@ -183,11 +193,14 @@ const DomainDashboard = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position='start'>
-                    <AddIcon />
+                    <IconButton>
+                      <AddIcon />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}
             >
+              <AddIcon sx={{ marginRight: '5px' }} />
               Create Domain
             </Button>
           </div>
@@ -199,9 +212,18 @@ const DomainDashboard = () => {
               onChange={handleFileChange}
             />
             <Button
-              sx={{ background: '#004CBE', color: '#fff', padding: '10px' }}
+              sx={{
+                padding: '10px',
+                background: '#004CBE',
+                color: '#fff',
+                textTransform: 'none',
+                '&:hover': {
+                  background: 'none',
+                },
+              }}
               onClick={handleButtonClick}
             >
+              <AddToPhotosIcon sx={{ marginRight: '5px' }} />
               Bulk JSON File
             </Button>
             <Button
@@ -222,154 +244,161 @@ const DomainDashboard = () => {
             onClose={() => setOpenModal(false)}
           />
         )}
-        {recordToUpdate && (
+        {recordIndex && (
           <UpdateDomain
-            initialDomainName={recordToUpdate.Name}
-            initialComment={recordToUpdate?.Config?.Comment}
+            open={openModal}
+            DomainName={recordIndex.Name}
+            Comment={recordIndex?.Config?.Comment}
             onSubmit={handleEditOrAddDomain}
             onClose={() => {
               setOpenModal(false)
-              setRecordToUpdate(null)
+              setRecordIndex(null)
             }}
           />
         )}
 
-        <div>
-          <TableContainer>
-            <Table sx={{ width: '70vw' }} aria-label='simple table'>
-              <TableHead sx={{ background: '#6366F1' }}>
-                <TableRow>
-                  <TableCell
-                    sx={{
-                      fontSize: '20px',
-                      fontWeight: 600,
-                      color: '#fff',
-                      textTransform: 'capitalize',
-                    }}
-                    align='center'
-                  >
-                    NAME
-                  </TableCell>
-                  <TableCell
-                    align='center'
-                    sx={{
-                      fontSize: '20px',
-                      fontWeight: 600,
-                      color: '#fff',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    ResourceRecordSetCount
-                  </TableCell>
-                  <TableCell
-                    align='center'
-                    sx={{
-                      fontSize: '20px',
-                      fontWeight: 600,
-                      color: '#fff',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    Comment
-                  </TableCell>
-                  <TableCell
-                    align='center'
-                    sx={{
-                      fontSize: '20px',
-                      fontWeight: 600,
-                      color: '#fff',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    Action
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody
-                sx={{
-                  background: '#F8FAFC',
-                  color: '#8B859B',
-                }}
-              >
-                {filteredData?.length > 0 ? (
-                  filteredData.map(row => (
-                    <TableRow
-                      key={row.Id}
+        {loading ? (
+          <div>
+            <Typography>Loading ...</Typography>
+          </div>
+        ) : (
+          <div>
+            <TableContainer>
+              <Table sx={{ width: '70vw' }} aria-label='simple table'>
+                <TableHead sx={{ background: '#6366F1' }}>
+                  <TableRow>
+                    <TableCell
                       sx={{
-                        '&:last-child td, &:last-child th': { border: 0 },
-                        '&:hover': {
-                          backgroundColor: '#FBE7D7',
-                        },
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        color: '#fff',
+                        textTransform: 'capitalize',
+                      }}
+                      align='center'
+                    >
+                      NAME
+                    </TableCell>
+                    <TableCell
+                      align='center'
+                      sx={{
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        color: '#fff',
+                        textTransform: 'capitalize',
                       }}
                     >
-                      <TableCell
-                        align='center'
+                      ResourceRecordSetCount
+                    </TableCell>
+                    <TableCell
+                      align='center'
+                      sx={{
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        color: '#fff',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      Comment
+                    </TableCell>
+                    <TableCell
+                      align='center'
+                      sx={{
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        color: '#fff',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody
+                  sx={{
+                    background: '#F8FAFC',
+                    color: '#8B859B',
+                  }}
+                >
+                  {filteredData?.length > 0 ? (
+                    filteredData.map((row, i) => (
+                      <TableRow
+                        key={i}
                         sx={{
-                          color: '#8B859B',
-                          fontSize: '15px',
-                          cursor: 'pointer',
+                          '&:last-child td, &:last-child th': { border: 0 },
                           '&:hover': {
-                            textDecoration: 'underline',
-                            textDecorationThickness: '1px',
+                            backgroundColor: '#FBE7D7',
                           },
                         }}
-                        onClick={() =>
-                          navigate(`/dns?id=${row.Id?.split('/').pop()}`)
-                        }
                       >
-                        {row.Name}
-                      </TableCell>
-                      <TableCell
-                        align='center'
-                        sx={{ color: '#8B859B', fontSize: '15px' }}
+                        <TableCell
+                          align='center'
+                          sx={{
+                            color: '#8B859B',
+                            fontSize: '15px',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              textDecoration: 'underline',
+                              textDecorationThickness: '1px',
+                            },
+                          }}
+                          onClick={() =>
+                            navigate(`/dns?id=${row.Id?.split('/').pop()}`)
+                          }
+                        >
+                          {row.Name}
+                        </TableCell>
+                        <TableCell
+                          align='center'
+                          sx={{ color: '#8B859B', fontSize: '15px' }}
+                        >
+                          {row.ResourceRecordSetCount}
+                        </TableCell>
+                        <TableCell
+                          align='center'
+                          sx={{ color: '#8B859B', fontSize: '15px' }}
+                        >
+                          {row?.Config?.Comment}
+                        </TableCell>
+                        <TableCell>
+                          {row.ResourceRecordSetCount <= 2 ? (
+                            <div className='flex justify-center gap-4 items-center'>
+                              <Button
+                                onClick={() => handleUpdateDomain(row)}
+                                sx={{ background: '#fff', color: '#6366F1' }}
+                              >
+                                Update
+                              </Button>
+                              <Button
+                                sx={{ background: '#fff', color: '#6366F1' }}
+                                onClick={() => handleDeleteDomain(row?.Id)}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          ) : (
+                            <Typography color={'#8B859B'} fontSize={'15px'}>
+                              delete after deleting all records
+                            </Typography>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <div className='w-[100%] text-center  flex justify-center items-center'>
+                      <Typography
+                        color={'#8B859B'}
+                        textAlign={'center'}
+                        fontSize={'20px'}
                       >
-                        {row.ResourceRecordSetCount}
-                      </TableCell>
-                      <TableCell
-                        align='center'
-                        sx={{ color: '#8B859B', fontSize: '15px' }}
-                      >
-                        {row?.Config?.Comment}
-                      </TableCell>
-                      <TableCell>
-                        {row.ResourceRecordSetCount <= 2 ? (
-                          <div className='flex justify-center gap-4 items-center'>
-                            <Button
-                              onClick={() => handleUpdateDomain(row)}
-                              sx={{ background: '#fff', color: '#6366F1' }}
-                            >
-                              Update
-                            </Button>
-                            <Button
-                              sx={{ background: '#fff', color: '#6366F1' }}
-                              onClick={() => handleDeleteDomain(row?.Id)}
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        ) : (
-                          <Typography color={'#8B859B'} fontSize={'15px'}>
-                            delete after deleting all records
-                          </Typography>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <div className='w-[100%] text-center  flex justify-center items-center'>
-                    <Typography
-                      color={'#8B859B'}
-                      textAlign={'center'}
-                      fontSize={'20px'}
-                    >
-                      No DNS Record
-                    </Typography>
-                  </div>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+                        No DNS Record
+                      </Typography>
+                    </div>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+        )}
       </div>
     </div>
   )

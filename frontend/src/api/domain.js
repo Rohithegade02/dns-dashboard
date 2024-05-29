@@ -11,7 +11,6 @@ export async function getDomain() {
 }
 
 export async function addDomain(data) {
-  console.log(data)
   try {
     const response = await fetch(
       'https://dns-dashboard-q1we.onrender.com/api/v1/domain/createdomain',
@@ -49,7 +48,6 @@ export async function updateDomainRecord(hostedZoneId, comment) {
 }
 
 export async function deleteDomain(hostedZoneId) {
-  console.log(hostedZoneId)
   try {
     const response = await fetch(
       `https://dns-dashboard-q1we.onrender.com/api/v1/domain/deletedomain/${hostedZoneId}`,

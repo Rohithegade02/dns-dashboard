@@ -6,9 +6,8 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
-import { useLocation } from 'react-router-dom'
 import { InputLabel, Modal } from '@mui/material'
-import { listHostedZones } from '../api/dns'
+
 const recordTypeOption = [
   { value: 'A', name: 'A (Address)' },
   { value: 'AAAA', name: 'AAAA (IPV6 Address)' },
@@ -21,17 +20,14 @@ const recordTypeOption = [
   { value: 'TXT', name: 'TXT Record' },
   { value: 'DNSSEC', name: 'DNSSEC' },
 ]
-const CreateDNSRecord = ({ onSubmit, open, onClose }) => {
-  const [domainName, setDomainName] = useState('')
-  console.log(domainName)
+const CreateDNSRecord = ({ domainName, onSubmit, open, onClose }) => {
   const [recordType, setRecordType] = useState('')
   const [recordValue, setRecordValue] = useState('')
   const params = new URLSearchParams(window.location.search)
   const code = params.get('id')
-  console.log(code)
 
-  const handleChangeRecordType = event => {
-    const selectedType = event.target.value
+  const handleChangeRecordType = e => {
+    const selectedType = e.target.value
     setRecordType(selectedType)
     switch (selectedType) {
       case 'A':
@@ -70,12 +66,7 @@ const CreateDNSRecord = ({ onSubmit, open, onClose }) => {
         setRecordValue('')
     }
   }
-  async function fetchDNSRecords() {
-    await listHostedZones(code).then(res => setDomainName(res[0].Name))
-  }
-  useEffect(() => {
-    fetchDNSRecords()
-  }, [])
+
   const handleSubmit = () => {
     const newDNSRecord = {
       recordData: {

@@ -51,7 +51,19 @@ const Login = () => {
       status: false,
       message: '',
     })
-
+    if (!user.email) {
+      setEmailError({
+        status: true,
+        message: 'Email is required',
+      })
+      return
+    } else if (!user.password) {
+      setPasswordError({
+        status: true,
+        message: 'Password is required',
+      })
+      return
+    }
     const res = await loginUser(user)
 
     if (res.success) {

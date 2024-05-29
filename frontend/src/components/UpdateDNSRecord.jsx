@@ -19,24 +19,22 @@ const recordTypeOption = [
   { value: 'DNSSEC', name: 'DNSSEC' },
 ]
 const UpdateDNSRecord = ({
-  initialDomainName,
-  initialRecordType,
-  initialRecordValue,
+  DomainName,
+  RecordType,
+  RecordValue,
   onSubmit,
   onClose,
+  open,
 }) => {
-  const [domainName, setDomainName] = useState(initialDomainName)
-  const [newRecordType, setNewRecordType] = useState(initialRecordType)
-  const [newRecordValue, setNewRecordValue] = useState(initialRecordValue)
+  const [domainName, setDomainName] = useState(DomainName)
+  const [newRecordType, setNewRecordType] = useState(RecordType)
+  const [newRecordValue, setNewRecordValue] = useState(RecordValue)
   const [ttl, setTTL] = useState('3600')
-  const params = new URLSearchParams(window.location.search)
-  const code = params.get('code')
 
   // Function to handle changes in record type
   const handleChangeRecordType = event => {
     const selectedType = event.target.value
     setNewRecordType(selectedType)
-    // Set record value and TTL based on record type
     switch (selectedType) {
       case 'A':
         setNewRecordValue('192.0.2.1')

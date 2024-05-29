@@ -1,5 +1,6 @@
 import Route53 from 'aws-sdk/clients/route53.js'
 import fs from 'fs';
+import csv from 'csv-parser';
 
 const route53 = new Route53();
 
@@ -90,43 +91,31 @@ export const deleteDomain = async (req,res) => {
   }
 }
 
-// const processBulkData = async (data) => {
-//   for (const item of data) {
-//     const { domainName, desc } = item;
 
-//     if (!domainName) {
-//       console.error("Missing domainName in item:", item);
-//       continue; // Skip this item and move to the next one
-//     }
 
-//     try {
-//       await createDomain({ domainName, desc });
-//     } catch (error) {
-//       console.error(`Error creating domain ${domainName}:`, error);
-//       // You can log errors or handle them as needed
-//     }
-//   }
-// };
-
-// bulk upload of domain data
 export const bulkUploadDomain = async (req, res) => {
   try {
     const filePath = req.file.path;
     const fileType = req.file.mimetype;
 
-    if (fileType !== 'application/json') {  //filetype should only be json type
-      throw new Error('File type must be JSON');
-    }
+    let data = [];
 
-    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    if (fileType === 'application/json') {
+      data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } else if (fileType === 'text/csv' || fileType === 'application/vnd.ms-excel') { // csv file types
+      data = await parseCSV(filePath);
+      console.log(data)
+    } else {
+      throw new Error('File type must be JSON or CSV');
+    }
 
     for (const item of data) {
       const { domainName, desc } = item;
 
-      if (!domainName) {
-        console.error("Missing domainName in item:", item);
-        continue; // Skip this item and move to the next one
-      }
+      // if (!domainName) {
+      //   console.error("Missing domainName in item:", item);
+      //   continue; // Skip this item and move to the next one
+      // } 
 
       const params = {
         CallerReference: `${Date.now()}`,
@@ -137,13 +126,24 @@ export const bulkUploadDomain = async (req, res) => {
       try {
         await route53.createHostedZone(params).promise();
       } catch (error) {
-        console.error(`Error creating domain ${domainName}:`, error);
+     return  console.error(`Error creating domain ${domainName}:`, error);
       }
     }
 
     fs.unlinkSync(filePath); // Clean up the file after processing
-    return res.status(200).json({ success: true,message:"Created Successfully" });
+    return res.status(200).json({ success: true, message: "Created Successfully" });
   } catch (error) {
-    return res.status(500).json({success: false, message:error });
+    return res.status(500).json({ success: false, message: error.message });
   }
+};
+
+const parseCSV = (filePath) => {
+  return new Promise((resolve, reject) => {
+    const results = [];
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (data) => results.push(data))
+      .on('end', () => resolve(results))
+      .on('error', (error) => reject(error));
+  });
 };

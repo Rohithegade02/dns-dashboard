@@ -21,7 +21,6 @@ export async function registerUser(data) {
 
 // login user
 export async function loginUser(data) {
-  console.log(data)
   try {
     const response = await fetch(
       'https://dns-dashboard-q1we.onrender.com/api/v1/user/login',
@@ -40,15 +39,3 @@ export async function loginUser(data) {
     console.error('Error:', error)
   }
 }
-
-// export async function isAuth() {
-//   try {
-//     const response = await fetch(
-//       'https://dns-dashboard-q1we.onrender.com/api/v1/user/getProfile',
-//     )
-//     console.log(response)
-//     return response.json()
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }

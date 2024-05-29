@@ -1,28 +1,23 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
+
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { InputLabel, Modal } from '@mui/material'
 
-const UpdateDomain = ({
-  initialDomainName,
-  initialComment,
-  onSubmit,
-  onClose,
-}) => {
-  const [domainName, setDomainName] = useState(initialDomainName)
+const UpdateDomain = ({ DomainName, Comment, onSubmit, onClose, open }) => {
+  const [newDomainName, setDomainName] = useState(DomainName)
 
-  const [newDescription, setNewDescription] = useState(initialComment)
+  const [newDescription, setNewDescription] = useState(Comment)
 
   const handleSubmit = () => {
     const data = {
-      domainName,
+      newDomainName,
       description: newDescription,
     }
     onSubmit(data)
   }
-  console.log(initialComment)
+
   return (
     <Modal
       open={open}
@@ -40,7 +35,7 @@ const UpdateDomain = ({
           <InputLabel sx={{ color: '#fff' }}>Domain Name</InputLabel>
           <TextField
             fullWidth
-            value={domainName}
+            value={newDomainName}
             placeholder='Domain Name'
             sx={{ color: '#fff', background: '#fff', borderRadius: '10px' }}
             disabled={true}

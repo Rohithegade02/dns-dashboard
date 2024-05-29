@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -10,7 +10,7 @@ const CreateDomain = ({ onSubmit, open, onClose }) => {
   const [recordValue, setRecordValue] = useState('')
   const [description, setDescription] = useState('')
 
-  const recordTypeChange = e => {
+  const handleRecordChangeS = e => {
     const selectedType = e.target.value
     setRecordType(selectedType)
     switch (selectedType) {

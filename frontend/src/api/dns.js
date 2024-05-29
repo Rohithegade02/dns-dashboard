@@ -11,7 +11,6 @@ export async function listHostedZones(hostedZoneId) {
 }
 
 export async function createDNSRecord(recordData, code) {
-  console.log(recordData, code)
   try {
     const response = await fetch(
       `https://dns-dashboard-q1we.onrender.com/api/v1/dns/add`,
@@ -32,7 +31,6 @@ export async function createDNSRecord(recordData, code) {
 }
 
 export async function updateDNSRecord(id, recordData) {
-  console.log(id, recordData)
   try {
     const response = await fetch(
       `https://dns-dashboard-q1we.onrender.com/api/v1/dns/update/${recordData}`,
