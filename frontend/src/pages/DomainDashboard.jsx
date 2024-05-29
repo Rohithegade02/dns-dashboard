@@ -132,8 +132,8 @@ const DomainDashboard = () => {
     }
   }
   //filter data by search
-  const filteredData = domainsData.filter(data =>
-    data.Name.toLowerCase().includes(search.toLowerCase()),
+  const filteredData = domainsData?.filter(data =>
+    data?.Name?.toLowerCase()?.includes(search?.toLowerCase()),
   )
   return (
     <div className='bg-gradient-to-r min-h-[100vh]  from-slate-50 via-[#FCE7D6] to-[#EFEEF3]'>

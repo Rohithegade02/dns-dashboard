@@ -106,8 +106,8 @@ function DNSDashboard() {
     }
   }
   //filtering data by search
-  const filteredData = dnsRecords.filter(data =>
-    data.Name.toLowerCase().includes(search.toLowerCase()),
+  const filteredData = dnsRecords?.filter(data =>
+    data?.Name?.toLowerCase()?.includes(search?.toLowerCase()),
   )
 
   return (
