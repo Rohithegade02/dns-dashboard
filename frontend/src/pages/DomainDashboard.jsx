@@ -54,7 +54,7 @@ const DomainDashboard = () => {
   const handleEditOrAddDomain = async data => {
     try {
       if (recordIndex) {
-        const id = recordIndex.Id?.split('/')?.pop()
+        const id = recordIndex?.Id?.split('/')?.pop()
         const res = await updateDomainRecord(id, data.description)
         if (res.success) {
           toast.success(res.message)
@@ -108,11 +108,11 @@ const DomainDashboard = () => {
   }
 
   const handleFileChange = event => {
-    setFile(event.target.files[0])
+    setFile(event?.target?.files[0])
   }
 
   const handleButtonClick = () => {
-    document.getElementById('fileInput').click()
+    document?.getElementById('fileInput')?.click()
   }
 
   //Function for bulk upload
@@ -388,7 +388,7 @@ const DomainDashboard = () => {
                         textAlign={'center'}
                         fontSize={'20px'}
                       >
-                        No DNS Record
+                        No Domain Record
                       </Typography>
                     </div>
                   )}

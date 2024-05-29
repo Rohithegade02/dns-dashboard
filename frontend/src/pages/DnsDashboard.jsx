@@ -98,7 +98,7 @@ function DNSDashboard() {
         toast.success(res.message)
         fetchDNSRecords()
       } else {
-        toast.error(res?.message?.message || res.message)
+        toast.error(res?.message?.message || res?.message)
         setOpenModal(false)
       }
     } catch (error) {
@@ -234,7 +234,7 @@ function DNSDashboard() {
             </div>
           ) : (
             <TableContainer>
-              <Table sx={{ maxWidth: '70vw' }} aria-label='simple table'>
+              <Table sx={{ width: '70vw' }} aria-label='simple table'>
                 <TableHead sx={{ background: '#6366F1' }}>
                   <TableRow>
                     <TableCell
