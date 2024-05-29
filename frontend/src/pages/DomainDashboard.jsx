@@ -123,9 +123,9 @@ const DomainDashboard = () => {
       if (res.success) {
         toast.success(res.message)
         getAllRecordData()
+        setFile(null)
       } else {
         toast.error(res.message)
-        setOpenModal(false)
       }
     } else {
       console.error('No file selected for upload')
