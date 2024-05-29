@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Typography from '@mui/material/Typography'
 
@@ -25,7 +25,7 @@ const CreateDNSRecord = ({ domainName, onSubmit, open, onClose }) => {
   const [recordValue, setRecordValue] = useState('')
   const params = new URLSearchParams(window.location.search)
   const code = params.get('id')
-
+  //handle record type change
   const handleChangeRecordType = e => {
     const selectedType = e.target.value
     setRecordType(selectedType)

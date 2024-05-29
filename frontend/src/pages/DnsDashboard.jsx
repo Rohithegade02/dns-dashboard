@@ -18,7 +18,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import CreateDNSRecord from '../components/CreateDNSRecord'
 import UpdateDNSRecord from '../components/UpdateDNSRecord'
 import SearchIcon from '@mui/icons-material/Search'
 import { AuthContext } from '../context/AuthProvider'
@@ -27,6 +26,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt'
 import DNSGraph from '../components/DNSGraph'
+import CreateDNSRecord from '../components/createDNSRecord'
 
 function DNSDashboard() {
   const [dnsRecords, setDNSRecords] = useState([])
