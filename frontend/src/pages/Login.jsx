@@ -13,11 +13,13 @@ const Login = () => {
     password: '',
   })
   const [emailError, setEmailError] = useState({
+    //error state
     //email error
     status: false,
     message: '',
   })
   const [passwordError, setPasswordError] = useState({
+    //error state
     // password error
     status: false,
     message: '',
@@ -67,7 +69,7 @@ const Login = () => {
     const res = await loginUser(user)
 
     if (res.success) {
-      login(res.token)
+      login(res.token) //login context setting token in localstorage
       navigate('/')
       toast.success(res.message)
     } else {

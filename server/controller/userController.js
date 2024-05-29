@@ -2,7 +2,7 @@ import express from 'express';
 import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
 import { sendToken } from '../utils/features.js';
-
+// controller to register a user
 export const registerUser=async (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
    
@@ -30,6 +30,7 @@ export const registerUser=async (req, res) => {
         });
     }
 }
+//controller to login user
 export const loginUser=async (req, res) => {
     const { email, password } = req.body;
 
@@ -56,17 +57,17 @@ export const loginUser=async (req, res) => {
         });
     }
 }
-export const logout=async (req, res) => {
-    res
-        .status(200)
-        .cookie("token", "",{expires:new Date(Date.now())})
-        .json({
-            success: true,
+// export const logout=async (req, res) => {
+//     res
+//         .status(200)
+//         .cookie("token", "",{expires:new Date(Date.now())})
+//         .json({
+//             success: true,
           
-        })
-}
-export const getProfile=(req, res) => {
-    return res.status(200).json({
-        success:true
-    })
-}
+//         })
+// }
+// export const getProfile=(req, res) => {
+//     return res.status(200).json({
+//         success:true
+//     })
+// }

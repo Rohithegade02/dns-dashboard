@@ -2,12 +2,11 @@
 import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
 
-// Load environment variables from .env file
 dotenv.config();
 
-
+//config AWS Crenditenal
 const configAWS = () => {
-    console.log(process.env.AWS_AccessID,process.env.AWS_Secret_Access_Key)
+    // console.log(process.env.AWS_AccessID,process.env.AWS_Secret_Access_Key)
     try {
       const res=  AWS.config.update({
           accessKeyId: process.env.AWS_ACCESS_KEY_ID,

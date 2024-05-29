@@ -1,13 +1,12 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import PrivateRoute from './components/ProtectedRoute'
-import { useContext } from 'react'
 import { AuthProvider } from './context/AuthProvider'
 import DomainDashboard from './pages/DomainDashboard'
-import Dashboard from './pages/Dashboard'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
+import DNSDashboard from './pages/DnsDashboard'
 
 function App() {
   return (
@@ -30,7 +29,7 @@ function App() {
               path='/dns'
               element={
                 <PrivateRoute>
-                  <Dashboard />
+                  <DNSDashboard />
                 </PrivateRoute>
               }
             />

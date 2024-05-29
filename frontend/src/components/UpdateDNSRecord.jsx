@@ -24,7 +24,7 @@ const UpdateDNSRecord = ({
   RecordValue,
   onSubmit,
   onClose,
-  open,
+  open, //fetching initial domainName ,recordType, recordValue for updation
 }) => {
   const [domainName, setDomainName] = useState(DomainName)
   const [newRecordType, setNewRecordType] = useState(RecordType)

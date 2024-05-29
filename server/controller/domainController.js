@@ -92,7 +92,7 @@ export const deleteDomain = async (req,res) => {
 }
 
 
-
+//controller to upload bulk csv or json 
 export const bulkUploadDomain = async (req, res) => {
   try {
     const filePath = req.file.path;
@@ -102,7 +102,7 @@ export const bulkUploadDomain = async (req, res) => {
 
     if (fileType === 'application/json') {
       data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } else if (fileType === 'text/csv' || fileType === 'application/vnd.ms-excel') { // csv file types
+    } else if (fileType === 'text/csv' ) { 
       data = await parseCSV(filePath);
       console.log(data)
     } else {
@@ -114,7 +114,7 @@ export const bulkUploadDomain = async (req, res) => {
 
       if (!domainName) {
         console.error("Missing domainName in item:", item);
-        continue; // Skip this item and move to the next one
+        continue; 
       } 
 
       const params = {
@@ -136,7 +136,7 @@ export const bulkUploadDomain = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
+//function to parsing the csv file
 const parseCSV = (filePath) => {
   return new Promise((resolve, reject) => {
     const results = [];

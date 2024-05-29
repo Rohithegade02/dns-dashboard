@@ -38,6 +38,7 @@ const DomainDashboard = () => {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
 
+  //Function to get all domain records
   const getAllRecordData = async () => {
     setLoading(true)
     try {
@@ -49,7 +50,7 @@ const DomainDashboard = () => {
       setLoading(false)
     }
   }
-
+  //FUnction for add and update domain
   const handleEditOrAddDomain = async data => {
     try {
       if (recordIndex) {
@@ -80,7 +81,7 @@ const DomainDashboard = () => {
       console.error(error)
     }
   }
-
+  //Function to delete the domain
   const handleDeleteDomain = async domainId => {
     try {
       const id = domainId?.split('/')?.pop()
@@ -100,7 +101,7 @@ const DomainDashboard = () => {
   useEffect(() => {
     getAllRecordData()
   }, [])
-
+  //FUnction to update domain
   const handleUpdateDomain = record => {
     setRecordIndex(record)
     setOpenModal(true)
@@ -113,6 +114,8 @@ const DomainDashboard = () => {
   const handleButtonClick = () => {
     document.getElementById('fileInput').click()
   }
+
+  //Function for bulk upload
   const handleBulkUpload = async () => {
     if (file) {
       const res = await bulkUploadDomains(file)
@@ -128,7 +131,7 @@ const DomainDashboard = () => {
       console.error('No file selected for upload')
     }
   }
-
+  //filter data by search
   const filteredData = domainsData.filter(data =>
     data.Name.toLowerCase().includes(search.toLowerCase()),
   )
@@ -143,6 +146,9 @@ const DomainDashboard = () => {
             background: '#09326E',
             color: '#fff',
             textTransform: 'none',
+            '&:hover': {
+              background: '#09326E',
+            },
           }}
         >
           Logout
@@ -181,25 +187,16 @@ const DomainDashboard = () => {
         <div className='flex justify-between w-[70vw] mb-5'>
           <div>
             <Button
-              onClick={() => setOpenModal(true)}
               sx={{
                 padding: '10px',
                 background: '#004CBE',
                 color: '#fff',
                 textTransform: 'none',
                 '&:hover': {
-                  background: 'none',
+                  background: '#004CBE',
                 },
               }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <IconButton>
-                      <AddIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+              onClick={() => setOpenModal(true)}
             >
               <AddIcon sx={{ marginRight: '5px' }} />
               Create Domain
@@ -219,7 +216,7 @@ const DomainDashboard = () => {
                 color: '#fff',
                 textTransform: 'none',
                 '&:hover': {
-                  background: 'none',
+                  background: '#004CBE',
                 },
               }}
               onClick={handleButtonClick}

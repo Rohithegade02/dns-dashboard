@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import {
   createDNSRecord,
   deleteDNSRecord,
-  listHostedZones,
+  getAllDNSRecord,
   updateDNSRecord,
 } from '../api/dns'
 import {
@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import CreateDNSRecord from '../components/createDNSRecord'
+import CreateDNSRecord from '../components/CreateDNSRecord'
 import UpdateDNSRecord from '../components/UpdateDNSRecord'
 import SearchIcon from '@mui/icons-material/Search'
 import { AuthContext } from '../context/AuthProvider'
@@ -27,7 +27,8 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt'
 import DNSGraph from '../components/DNSGraph'
-function Dashboard() {
+
+function DNSDashboard() {
   const [dnsRecords, setDNSRecords] = useState([])
   const navigate = useNavigate()
   const [openModal, setOpenModal] = useState(false)
@@ -35,17 +36,18 @@ function Dashboard() {
   const [recordIndex, setRecordIndex] = useState(null)
   const params = new URLSearchParams(window.location.search)
   const code = params.get('id')
-  const { logout } = useContext(AuthContext)
+  const { logout } = useContext(AuthContext) //logout context to remove token on logout
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     fetchDNSRecords()
   }, [])
-
+  //FUnction to fetch DNS Records
   async function fetchDNSRecords() {
     setLoading(true)
     try {
-      const data = await listHostedZones(code)
+      const data = await getAllDNSRecord(code)
       setDNSRecords(data)
     } catch (error) {
       console.error('Error fetching DNS records:', error)
@@ -53,7 +55,7 @@ function Dashboard() {
       setLoading(false)
     }
   }
-
+  //Function to update or add DNS Record
   const handleEditOrAddDns = async recordData => {
     try {
       if (recordIndex) {
@@ -88,7 +90,7 @@ function Dashboard() {
     setRecordIndex(record)
     setOpenModal(true)
   }
-
+  //Function to delete DNs Record
   const handleDeleteDNSRecord = async record => {
     try {
       const res = await deleteDNSRecord(record, code)
@@ -103,7 +105,7 @@ function Dashboard() {
       console.error(error)
     }
   }
-
+  //filtering data by search
   const filteredData = dnsRecords.filter(data =>
     data.Name.toLowerCase().includes(search.toLowerCase()),
   )
@@ -361,4 +363,4 @@ function Dashboard() {
   )
 }
 
-export default Dashboard
+export default DNSDashboard

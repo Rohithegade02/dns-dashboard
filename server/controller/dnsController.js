@@ -2,7 +2,7 @@ import Route53 from "aws-sdk/clients/route53.js";
 const route53 = new Route53();
 
 //get all DNS Record
-export const listHostedZones = async (req, res) => {
+export const getAllDNSRecord = async (req, res) => {
   try {
     const {hostedZoneId} =  req.params;
      await route53.listHostedZones().promise();

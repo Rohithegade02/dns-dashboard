@@ -6,8 +6,8 @@ import Button from '@mui/material/Button'
 import { InputLabel, Modal } from '@mui/material'
 
 const UpdateDomain = ({ DomainName, Comment, onSubmit, onClose, open }) => {
+  //fetching initial domainName ,comment for updation
   const [newDomainName, setDomainName] = useState(DomainName)
-
   const [newDescription, setNewDescription] = useState(Comment)
 
   const handleSubmit = () => {

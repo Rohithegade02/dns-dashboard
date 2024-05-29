@@ -5,6 +5,6 @@ export const sendToken = (user,res,message,statusCode) => {
         expiresIn: '10h',  //token expies in 10 hours
       })
      res
-        .cookie("token", token)
+        .cookie("token", token)     //setting token in cookie
         .status(statusCode).json({success:true, message: message ,token});
 }
